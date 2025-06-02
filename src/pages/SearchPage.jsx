@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import SearchForm from '../components/SearchForm';
 import SearchResults from '../components/SearchResults';
+import Renault from '/assets/images/Renault Clio.jpg';
+import Peugeot from '/assets/images/Peugeot 3008.jpg';
+import Citroen from '/assets/images/Citroën C3.jpg';
+import Audi from '/assets/images/Audi_A4_B9_Limousine_3.0_TDI_quattro.webp';
+import Volkswagen from '/assets/images/volkswagen-golf-r-mk85-2024.webp';
+import Toyota from '/assets/images/Yaris_mobile_Large-Landscape.webp';
+import BMW from '/assets/images/BMW X3.webp';
+import Mercedes from '/assets/images/Mercedes Classe s.webp';
 
 function SearchPage() {
   const [searchParams] = useSearchParams();
@@ -36,7 +44,7 @@ function SearchPage() {
           model: 'Clio',
           year: 2022,
           category: 'Économique',
-          image: '/assets/images/car-renault-clio.jpg',
+          image: '/assets/images/Renault Clio.jpg',
           price: 35,
           transmission: 'Manuelle',
           seats: 5,
@@ -51,7 +59,7 @@ function SearchPage() {
           model: '3008',
           year: 2021,
           category: 'SUV',
-          image: '/assets/images/car-peugeot-3008.jpg',
+          image: '/assets/images/Peugeot 3008.jpg',
           price: 65,
           transmission: 'Automatique',
           seats: 5,
@@ -66,7 +74,7 @@ function SearchPage() {
           model: 'C3',
           year: 2022,
           category: 'Économique',
-          image: '/assets/images/car-citroen-c3.jpg',
+          image: '/assets/images/Citroën C3.jpg',
           price: 38,
           transmission: 'Manuelle',
           seats: 5,
@@ -81,7 +89,7 @@ function SearchPage() {
           model: 'A4',
           year: 2021,
           category: 'Premium',
-          image: '/assets/images/car-audi-a4.jpg',
+          image: '/assets/images/Audi_A4_B9_Limousine_3.0_TDI_quattro.webp',
           price: 95,
           transmission: 'Automatique',
           seats: 5,
@@ -96,7 +104,7 @@ function SearchPage() {
           model: 'Golf',
           year: 2021,
           category: 'Compacte',
-          image: '/assets/images/car-vw-golf.jpg',
+          image: '/assets/images/volkswagen-golf-r-mk85-2024.webp',
           price: 45,
           transmission: 'Manuelle',
           seats: 5,
@@ -111,7 +119,7 @@ function SearchPage() {
           model: 'Yaris',
           year: 2022,
           category: 'Économique',
-          image: '/assets/images/car-toyota-yaris.jpg',
+          image: '/assets/images/Yaris_mobile_Large-Landscape.webp',
           price: 40,
           transmission: 'Automatique',
           seats: 5,
@@ -126,7 +134,7 @@ function SearchPage() {
           model: 'X3',
           year: 2021,
           category: 'SUV',
-          image: '/assets/images/car-bmw-x3.jpg',
+          image: '/assets/images/BMW X3.webp',
           price: 110,
           transmission: 'Automatique',
           seats: 5,
@@ -141,7 +149,7 @@ function SearchPage() {
           model: 'Classe C',
           year: 2021,
           category: 'Premium',
-          image: '/assets/images/car-mercedes-c.jpg',
+          image: '/assets/images/mercedes--classe-s-berline--2024-m-1.jpg',
           price: 120,
           transmission: 'Automatique',
           seats: 5,
