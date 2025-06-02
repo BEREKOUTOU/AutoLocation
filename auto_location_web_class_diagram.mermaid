@@ -1,0 +1,232 @@
+classDiagram
+    class User {
+        +string userId
+        +string firstName
+        +string lastName
+        +string email
+        +string phoneNumber
+        +string passwordHash
+        +boolean isEmailVerified
+        +boolean isPhoneVerified
+        +string drivingLicenseNumber
+        +Date drivingLicenseExpiry
+        +Array~Address~ addresses
+        +Array~PaymentMethod~ paymentMethods
+        +Date createdAt
+        +Date updatedAt
+        +register(userData) User
+        +login(email, password) Token
+        +updateProfile(userData) User
+        +addPaymentMethod(paymentData) PaymentMethod
+        +addAddress(addressData) Address
+        +getReservations() Array~Reservation~
+    }
+    
+    class Address {
+        +string addressId
+        +string userId
+        +string street
+        +string city
+        +string state
+        +string postalCode
+        +string country
+        +boolean isDefault
+        +save() Address
+        +update(addressData) Address
+        +delete() boolean
+    }
+    
+    class PaymentMethod {
+        +string paymentMethodId
+        +string userId
+        +string type
+        +string lastFourDigits
+        +string cardholderName
+        +Date expiryDate
+        +boolean isDefault
+        +string tokenizedData
+        +save() PaymentMethod
+        +delete() boolean
+    }
+    
+    class Vehicle {
+        +string vehicleId
+        +string brand
+        +string model
+        +number year
+        +string category
+        +string transmission
+        +number seats
+        +number doors
+        +boolean airConditioning
+        +string fuelType
+        +number fuelEconomy
+        +Array~string~ features
+        +Array~string~ imageUrls
+        +string licensePlate
+        +string status
+        +string locationId
+        +number basePrice
+        +getAvailability(startDate, endDate) boolean
+        +calculatePrice(startDate, endDate, options) Price
+        +getReviews() Array~Review~
+        +update(vehicleData) Vehicle
+    }
+    
+    class Location {
+        +string locationId
+        +string name
+        +string street
+        +string city
+        +string state
+        +string postalCode
+        +string country
+        +string phoneNumber
+        +string email
+        +GeoCoordinates coordinates
+        +Array~TimeSlot~ openingHours
+        +getAvailableVehicles(startDate, endDate, category) Array~Vehicle~
+        +update(locationData) Location
+    }
+    
+    class Reservation {
+        +string reservationId
+        +string userId
+        +string vehicleId
+        +string pickupLocationId
+        +string dropoffLocationId
+        +Date pickupDateTime
+        +Date dropoffDateTime
+        +string status
+        +number basePrice
+        +number taxAmount
+        +Array~ReservationAddon~ addons
+        +number totalPrice
+        +string paymentId
+        +Date createdAt
+        +create(reservationData) Reservation
+        +update(updateData) Reservation
+        +cancel() boolean
+        +generateInvoice() Invoice
+        +calculatePriceBreakdown() PriceBreakdown
+    }
+    
+    class ReservationAddon {
+        +string addonId
+        +string reservationId
+        +string name
+        +string description
+        +number price
+        +number quantity
+    }
+    
+    class Payment {
+        +string paymentId
+        +string reservationId
+        +string userId
+        +string paymentMethodId
+        +number amount
+        +string currency
+        +string status
+        +string transactionId
+        +Date timestamp
+        +process() PaymentResult
+        +refund(amount) RefundResult
+    }
+    
+    class SecurityDeposit {
+        +string depositId
+        +string reservationId
+        +string userId
+        +number amount
+        +string status
+        +Date capturedAt
+        +Date releasedAt
+        +capture() boolean
+        +release() boolean
+    }
+    
+    class Invoice {
+        +string invoiceId
+        +string reservationId
+        +string userId
+        +Date issueDate
+        +Date dueDate
+        +Array~InvoiceItem~ items
+        +number subtotal
+        +number taxAmount
+        +number totalAmount
+        +string status
+        +generate() pdf
+        +send() boolean
+    }
+    
+    class Review {
+        +string reviewId
+        +string userId
+        +string vehicleId
+        +string reservationId
+        +number rating
+        +string comment
+        +Date createdAt
+        +save() Review
+        +update(reviewData) Review
+    }
+    
+    class Admin {
+        +string adminId
+        +string username
+        +string email
+        +string passwordHash
+        +string role
+        +login(username, password) AdminToken
+        +getVehicleStats() VehicleStats
+        +getReservationStats() ReservationStats
+        +getRevenueReport(startDate, endDate) RevenueReport
+        +manageVehicleAvailability(vehicleId, availability) boolean
+    }
+    
+    class AuthService {
+        +generateToken(userId, role) Token
+        +verifyToken(token) TokenPayload
+        +generatePasswordResetToken(email) ResetToken
+        +resetPassword(token, newPassword) boolean
+        +generate2FACode(userId) 2FACode
+        +verify2FACode(userId, code) boolean
+    }
+    
+    class VehicleAvailabilityService {
+        +checkAvailability(vehicleId, startDate, endDate) boolean
+        +getAvailableVehicles(locationId, startDate, endDate, filters) Array~Vehicle~
+        +blockVehicle(vehicleId, startDate, endDate, reason) boolean
+        +releaseVehicle(vehicleId, startDate, endDate) boolean
+    }
+    
+    class PricingService {
+        +calculateBasePrice(vehicleId, startDate, endDate) number
+        +applyDiscounts(basePrice, discountCodes, userId) DiscountResult
+        +calculateTaxes(priceBeforeTax, locationId) TaxResult
+        +calculateAddonsCost(addons) number
+        +calculateFinalPrice(basePrice, discounts, taxes, addons) PriceBreakdown
+    }
+    
+    class NotificationService {
+        +sendEmail(to, subject, body) boolean
+        +sendSMS(to, message) boolean
+        +sendPushNotification(userId, title, body, data) boolean
+        +scheduleNotification(type, recipientId, template, data, sendAt) NotificationJob
+    }
+    
+    User "1" -- "*" Reservation : makes
+    User "1" -- "*" PaymentMethod : has
+    User "1" -- "*" Address : has
+    User "1" -- "*" Review : writes
+    Vehicle "1" -- "*" Reservation : booked for
+    Vehicle "1" -- "*" Review : receives
+    Location "1" -- "*" Vehicle : houses
+    Reservation "1" -- "1" Payment : paid with
+    Reservation "1" -- "0..1" SecurityDeposit : secured by
+    Reservation "1" -- "1" Invoice : generates
+    Reservation "1" -- "*" ReservationAddon : includes
+    Admin -- AuthService : uses
+    Admin -- VehicleAvailabilityService : manages

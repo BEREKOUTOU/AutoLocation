@@ -1,0 +1,414 @@
+{
+  "systemName": "Auto Location Web",
+  "projectOverview": "Système de location de voitures en ligne permettant aux utilisateurs de rechercher, réserver et payer des véhicules",
+  
+  "architecture": {
+    "type": "Microservices",
+    "components": [
+      {
+        "name": "Frontend",
+        "description": "Interface utilisateur web responsive",
+        "technology": "React avec Tailwind CSS",
+        "modules": [
+          "Recherche et filtrage de véhicules",
+          "Gestion des réservations",
+          "Interface de paiement",
+          "Profil utilisateur",
+          "Administration (accès limité)"
+        ]
+      },
+      {
+        "name": "API Gateway",
+        "description": "Point d'entrée central pour toutes les requêtes",
+        "technology": "Nginx / AWS API Gateway",
+        "responsibilities": [
+          "Routage",
+          "Équilibrage de charge",
+          "Limitation de débit",
+          "Mise en cache"
+        ]
+      },
+      {
+        "name": "Service d'authentification",
+        "description": "Gère les identités et l'authentification des utilisateurs",
+        "technology": "Node.js/Express avec Passport.js et JWT",
+        "endpoints": [
+          "/api/auth/register",
+          "/api/auth/login",
+          "/api/auth/verify-2fa",
+          "/api/auth/reset-password",
+          "/api/auth/admin/login"
+        ]
+      },
+      {
+        "name": "Service de gestion des véhicules",
+        "description": "Gestion de l'inventaire et de la disponibilité des véhicules",
+        "technology": "Node.js/Express avec Sequelize",
+        "endpoints": [
+          "/api/vehicles",
+          "/api/vehicles/search",
+          "/api/vehicles/{id}",
+          "/api/vehicles/{id}/availability"
+        ]
+      },
+      {
+        "name": "Service de réservation",
+        "description": "Traitement des réservations et gestion des états",
+        "technology": "Node.js/Express avec Sequelize",
+        "endpoints": [
+          "/api/reservations",
+          "/api/reservations/{id}",
+          "/api/reservations/check-availability",
+          "/api/reservations/{id}/return"
+        ]
+      },
+      {
+        "name": "Service de paiement",
+        "description": "Traitement des paiements et gestion des dépôts",
+        "technology": "Node.js/Express avec l'API Stripe",
+        "endpoints": [
+          "/api/payments",
+          "/api/payments/{id}",
+          "/api/payments/deposit",
+          "/api/payments/refund"
+        ]
+      },
+      {
+        "name": "Service de notification",
+        "description": "Envoi d'emails, SMS et notifications push",
+        "technology": "Node.js avec SendGrid, Twilio et Firebase",
+        "messageTypes": [
+          "Confirmation d'inscription",
+          "Codes 2FA",
+          "Confirmation de réservation",
+          "Rappels",
+          "Factures",
+          "Notifications de retour"
+        ]
+      },
+      {
+        "name": "Service d'administration",
+        "description": "Gestion de la flotte et tableaux de bord administratifs",
+        "technology": "Node.js/Express avec Sequelize",
+        "endpoints": [
+          "/api/admin/vehicles",
+          "/api/admin/reservations",
+          "/api/admin/users",
+          "/api/admin/reports"
+        ]
+      }
+    ],
+    
+    "databases": [
+      {
+        "name": "PostgreSQL",
+        "description": "Base de données relationnelle principale",
+        "tables": [
+          "vehicles",
+          "reservations",
+          "payments",
+          "locations",
+          "security_deposits",
+          "invoices",
+          "reservation_addons"
+        ]
+      },
+      {
+        "name": "MongoDB",
+        "description": "Base de données NoSQL pour données flexibles",
+        "collections": [
+          "users",
+          "reviews",
+          "notifications",
+          "user_preferences"
+        ]
+      },
+      {
+        "name": "Redis",
+        "description": "Stockage en mémoire pour cache et sessions",
+        "usages": [
+          "Sessions utilisateur",
+          "Mise en cache des résultats de recherche",
+          "Verrouillage temporaire pour réservations"
+        ]
+      }
+    ],
+    
+    "externalServices": [
+      {
+        "name": "Stripe",
+        "description": "Traitement des paiements"
+      },
+      {
+        "name": "SendGrid",
+        "description": "Service d'emails"
+      },
+      {
+        "name": "Twilio",
+        "description": "Service SMS"
+      },
+      {
+        "name": "Google Maps",
+        "description": "Cartographie et géolocalisation"
+      },
+      {
+        "name": "AWS S3",
+        "description": "Stockage d'objets pour images de véhicules"
+      },
+      {
+        "name": "CloudFront",
+        "description": "CDN pour contenu statique"
+      }
+    ],
+    
+    "deploymentInfrastructure": {
+      "containerization": "Docker",
+      "orchestration": "Kubernetes",
+      "cloudProvider": "AWS",
+      "services": [
+        "EC2",
+        "RDS (PostgreSQL)",
+        "DocumentDB (MongoDB)",
+        "ElastiCache (Redis)",
+        "S3",
+        "CloudFront",
+        "CloudWatch"
+      ]
+    }
+  },
+  
+  "dataModels": {
+    "entities": [
+      {
+        "name": "User",
+        "attributes": [
+          {"name": "userId", "type": "string", "description": "Identifiant unique"},
+          {"name": "firstName", "type": "string", "description": "Prénom"},
+          {"name": "lastName", "type": "string", "description": "Nom de famille"},
+          {"name": "email", "type": "string", "description": "Adresse email"},
+          {"name": "phoneNumber", "type": "string", "description": "Numéro de téléphone"},
+          {"name": "passwordHash", "type": "string", "description": "Mot de passe hashé"},
+          {"name": "isEmailVerified", "type": "boolean", "description": "Email vérifié"},
+          {"name": "isPhoneVerified", "type": "boolean", "description": "Téléphone vérifié"},
+          {"name": "drivingLicenseNumber", "type": "string", "description": "Numéro de permis"},
+          {"name": "drivingLicenseExpiry", "type": "Date", "description": "Date d'expiration du permis"}
+        ]
+      },
+      {
+        "name": "Vehicle",
+        "attributes": [
+          {"name": "vehicleId", "type": "string", "description": "Identifiant unique"},
+          {"name": "brand", "type": "string", "description": "Marque"},
+          {"name": "model", "type": "string", "description": "Modèle"},
+          {"name": "year", "type": "number", "description": "Année"},
+          {"name": "category", "type": "string", "description": "Catégorie"},
+          {"name": "transmission", "type": "string", "description": "Type de transmission"},
+          {"name": "seats", "type": "number", "description": "Nombre de sièges"},
+          {"name": "fuelType", "type": "string", "description": "Type de carburant"},
+          {"name": "status", "type": "string", "description": "État (disponible, réservé, maintenance)"},
+          {"name": "basePrice", "type": "number", "description": "Prix de base par jour"}
+        ]
+      },
+      {
+        "name": "Reservation",
+        "attributes": [
+          {"name": "reservationId", "type": "string", "description": "Identifiant unique"},
+          {"name": "userId", "type": "string", "description": "ID utilisateur"},
+          {"name": "vehicleId", "type": "string", "description": "ID véhicule"},
+          {"name": "pickupDateTime", "type": "Date", "description": "Date et heure de prise en charge"},
+          {"name": "dropoffDateTime", "type": "Date", "description": "Date et heure de retour"},
+          {"name": "status", "type": "string", "description": "État (confirmé, en cours, terminé, annulé)"},
+          {"name": "totalPrice", "type": "number", "description": "Prix total"}
+        ]
+      },
+      {
+        "name": "Payment",
+        "attributes": [
+          {"name": "paymentId", "type": "string", "description": "Identifiant unique"},
+          {"name": "reservationId", "type": "string", "description": "ID réservation"},
+          {"name": "amount", "type": "number", "description": "Montant"},
+          {"name": "currency", "type": "string", "description": "Devise"},
+          {"name": "status", "type": "string", "description": "État du paiement"},
+          {"name": "transactionId", "type": "string", "description": "ID transaction externe"}
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "entity1": "User",
+        "entity2": "Reservation",
+        "type": "one-to-many",
+        "description": "Un utilisateur peut avoir plusieurs réservations"
+      },
+      {
+        "entity1": "Vehicle",
+        "entity2": "Reservation",
+        "type": "one-to-many",
+        "description": "Un véhicule peut avoir plusieurs réservations (à des dates différentes)"
+      },
+      {
+        "entity1": "Reservation",
+        "entity2": "Payment",
+        "type": "one-to-one",
+        "description": "Une réservation est associée à un paiement"
+      }
+    ]
+  },
+  
+  "security": {
+    "authentication": {
+      "method": "JWT avec authentification à deux facteurs",
+      "tokenExpiration": "1 heure"
+    },
+    "dataProtection": {
+      "atRest": "Chiffrement AES-256",
+      "inTransit": "TLS/SSL",
+      "passwordStorage": "Bcrypt avec sel"
+    },
+    "paymentSecurity": {
+      "compliance": "PCI-DSS",
+      "tokenization": "Stripe pour les informations de carte"
+    },
+    "apiSecurity": {
+      "rateLimiting": true,
+      "csrfProtection": true,
+      "inputValidation": "Joi pour validation côté serveur",
+      "injectionPrevention": "Paramètres préparés pour SQL, validation pour NoSQL"
+    },
+    "gdprCompliance": {
+      "consentManagement": true,
+      "rightToBeForgotten": true,
+      "dataPortability": true,
+      "accessControl": "RBAC (Contrôle d'accès basé sur les rôles)"
+    }
+  },
+  
+  "apis": {
+    "authenticationAPI": {
+      "endpoints": [
+        {
+          "path": "/api/auth/register",
+          "method": "POST",
+          "description": "Enregistrement d'un nouvel utilisateur",
+          "parameters": ["firstName", "lastName", "email", "password", "phoneNumber"]
+        },
+        {
+          "path": "/api/auth/login",
+          "method": "POST",
+          "description": "Authentification d'un utilisateur",
+          "parameters": ["email", "password"]
+        },
+        {
+          "path": "/api/auth/verify-2fa",
+          "method": "POST",
+          "description": "Vérification du code 2FA",
+          "parameters": ["userId", "code"]
+        }
+      ]
+    },
+    "vehicleAPI": {
+      "endpoints": [
+        {
+          "path": "/api/vehicles/search",
+          "method": "GET",
+          "description": "Recherche de véhicules disponibles",
+          "parameters": ["locationId", "pickupDate", "dropoffDate", "category", "filters"]
+        },
+        {
+          "path": "/api/vehicles/{id}",
+          "method": "GET",
+          "description": "Obtenir les détails d'un véhicule",
+          "parameters": ["vehicleId"]
+        }
+      ]
+    },
+    "reservationAPI": {
+      "endpoints": [
+        {
+          "path": "/api/reservations",
+          "method": "POST",
+          "description": "Créer une nouvelle réservation",
+          "parameters": ["userId", "vehicleId", "pickupDateTime", "dropoffDateTime", "options"]
+        },
+        {
+          "path": "/api/reservations/{id}",
+          "method": "PUT",
+          "description": "Modifier une réservation existante",
+          "parameters": ["reservationId", "changes"]
+        },
+        {
+          "path": "/api/reservations/{id}",
+          "method": "DELETE",
+          "description": "Annuler une réservation",
+          "parameters": ["reservationId"]
+        }
+      ]
+    },
+    "paymentAPI": {
+      "endpoints": [
+        {
+          "path": "/api/payments",
+          "method": "POST",
+          "description": "Traiter un paiement",
+          "parameters": ["reservationId", "paymentMethodId", "amount"]
+        },
+        {
+          "path": "/api/payments/deposit",
+          "method": "POST",
+          "description": "Capturer un dépôt de garantie",
+          "parameters": ["reservationId", "paymentMethodId", "amount"]
+        },
+        {
+          "path": "/api/payments/deposit/{id}/release",
+          "method": "POST",
+          "description": "Libérer un dépôt de garantie",
+          "parameters": ["depositId"]
+        }
+      ]
+    }
+  },
+  
+  "keyWorkflows": {
+    "vehicleReservation": [
+      "Recherche de véhicules disponibles",
+      "Sélection d'un véhicule et vérification des détails",
+      "Ajout d'options supplémentaires (GPS, siège enfant)",
+      "Vérification de la disponibilité en temps réel",
+      "Calcul du prix total",
+      "Saisie des détails utilisateur et du permis de conduire",
+      "Paiement et capture du dépôt de garantie",
+      "Confirmation de la réservation et envoi de notification"
+    ],
+    "vehiclePickup": [
+      "Vérification de l'identité et du permis de conduire",
+      "Inspection de l'état du véhicule",
+      "État des lieux numérique avec photos",
+      "Signature du contrat électronique",
+      "Remise des clés ou activation de l'accès sans clé"
+    ],
+    "vehicleReturn": [
+      "Vérification de l'état du véhicule au retour",
+      "Enregistrement du kilométrage et du niveau de carburant",
+      "Calcul des frais supplémentaires éventuels",
+      "Libération du dépôt de garantie",
+      "Génération de la facture finale",
+      "Invitation à laisser un avis"
+    ]
+  },
+  
+  "technicalChallenges": [
+    "Gestion des réservations simultanées pour éviter les conflits",
+    "Système de tarification dynamique selon la demande et la saison",
+    "Intégration sécurisée avec les services de paiement",
+    "Système d'état des lieux numérique fiable",
+    "Solution pour l'accès sans clé aux véhicules",
+    "Performance et mise à l'échelle du système pendant les périodes de pointe"
+  ],
+  
+  "scalabilityConsiderations": {
+    "horizontalScaling": "Ajout de nœuds pour les services à forte demande",
+    "verticalScaling": "Augmentation des ressources pour les bases de données",
+    "cachingStrategy": "Mise en cache des résultats de recherche fréquents",
+    "databaseSharding": "Répartition des données par région géographique"
+  }
+}

@@ -1,0 +1,160 @@
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant API
+    participant AuthService
+    participant UserService
+    participant VehicleService
+    participant ReservationService
+    participant PaymentService
+    participant NotificationService
+    participant Database
+    
+    %% User Registration Flow
+    User->>Frontend: Accède à la page d'inscription
+    Frontend->>API: POST /api/auth/register
+    API->>AuthService: register(userData)
+    AuthService->>Database: Vérifie si l'email existe
+    Database-->>AuthService: Email disponible
+    AuthService->>Database: Crée un nouvel utilisateur
+    AuthService->>NotificationService: sendVerificationEmail(email)
+    NotificationService-->>User: Envoie un email de vérification
+    AuthService-->>API: Succès de l'inscription
+    API-->>Frontend: 201 Created (User)
+    Frontend-->>User: Affiche confirmation et instructions
+    
+    %% User Login Flow
+    User->>Frontend: Saisit email/mot de passe
+    Frontend->>API: POST /api/auth/login
+    API->>AuthService: login(email, password)
+    AuthService->>Database: Vérifie les identifiants
+    Database-->>AuthService: Identifiants valides
+    AuthService->>AuthService: generate2FACode(userId) 
+    AuthService-->>NotificationService: send2FACode(userId, code)
+    NotificationService-->>User: Envoie code par SMS
+    User->>Frontend: Entre le code 2FA
+    Frontend->>API: POST /api/auth/verify-2fa
+    API->>AuthService: verify2FACode(userId, code)
+    AuthService->>AuthService: generateToken(userId, role)
+    AuthService-->>API: Token JWT
+    API-->>Frontend: 200 OK + Token
+    Frontend-->>User: Redirige vers tableau de bord
+    
+    %% Vehicle Search Flow
+    User->>Frontend: Remplit formulaire de recherche
+    Frontend->>API: GET /api/vehicles/search?params
+    API->>VehicleService: searchVehicles(locationId, dates, filters)
+    VehicleService->>Database: Requête véhicules disponibles
+    Database-->>VehicleService: Liste des véhicules
+    VehicleService-->>API: Véhicules disponibles
+    API-->>Frontend: 200 OK + Résultats
+    Frontend-->>User: Affiche résultats de recherche
+    
+    %% Vehicle Reservation Flow
+    User->>Frontend: Sélectionne un véhicule
+    Frontend->>API: GET /api/vehicles/{id}
+    API->>VehicleService: getVehicleDetails(id)
+    VehicleService->>Database: Requête détails du véhicule
+    Database-->>VehicleService: Détails du véhicule
+    VehicleService-->>API: Données du véhicule
+    API-->>Frontend: 200 OK + Détails
+    Frontend-->>User: Affiche page de détail
+    User->>Frontend: Clique sur "Réserver"
+    Frontend->>API: POST /api/reservations/check-availability
+    API->>VehicleService: checkAvailability(vehicleId, dates)
+    VehicleService->>Database: Vérifie disponibilité
+    Database-->>VehicleService: Confirmation disponibilité
+    VehicleService-->>API: Disponibilité confirmée
+    API-->>Frontend: 200 OK + Disponible
+    Frontend-->>User: Affiche formulaire de réservation
+    User->>Frontend: Complète formulaire et options
+    Frontend->>API: GET /api/pricing/calculate
+    API->>ReservationService: calculatePrice(vehicleId, dates, options)
+    ReservationService->>Database: Obtient tarifs de base
+    Database-->>ReservationService: Tarifs
+    ReservationService-->>API: Détail des prix
+    API-->>Frontend: 200 OK + Détail prix
+    Frontend-->>User: Affiche récapitulatif et prix
+    User->>Frontend: Confirme et paye
+    Frontend->>API: POST /api/reservations
+    API->>ReservationService: createReservation(reservationData)
+    ReservationService->>Database: Crée réservation (statut=pending)
+    Database-->>ReservationService: ID réservation
+    ReservationService-->>API: Réservation créée
+    API->>PaymentService: processPayment(paymentData)
+    PaymentService->>ExternalPaymentAPI: Traite paiement
+    ExternalPaymentAPI-->>PaymentService: Confirmation paiement
+    PaymentService->>Database: Enregistre paiement
+    PaymentService-->>API: Paiement réussi
+    API->>ReservationService: updateReservationStatus(id, "confirmed")
+    ReservationService->>Database: Met à jour statut réservation
+    ReservationService->>NotificationService: sendConfirmationEmail(userId, reservationData)
+    NotificationService-->>User: Envoie confirmation par email
+    API-->>Frontend: 200 OK + Confirmation
+    Frontend-->>User: Affiche confirmation de réservation
+    
+    %% Reservation Management Flow
+    User->>Frontend: Accède au tableau de bord
+    Frontend->>API: GET /api/users/reservations
+    API->>UserService: getUserReservations(userId)
+    UserService->>Database: Requête réservations utilisateur
+    Database-->>UserService: Liste des réservations
+    UserService-->>API: Données des réservations
+    API-->>Frontend: 200 OK + Réservations
+    Frontend-->>User: Affiche les réservations
+    
+    %% Reservation Modification Flow
+    User->>Frontend: Modifie une réservation
+    Frontend->>API: PUT /api/reservations/{id}
+    API->>ReservationService: updateReservation(id, changes)
+    ReservationService->>VehicleService: checkAvailability(vehicleId, newDates)
+    VehicleService->>Database: Vérifie nouvelle disponibilité
+    Database-->>VehicleService: Disponibilité confirmée
+    VehicleService-->>ReservationService: Disponible
+    ReservationService->>Database: Met à jour réservation
+    Database-->>ReservationService: Mise à jour OK
+    ReservationService->>NotificationService: sendUpdateNotification(userId, updatedData)
+    NotificationService-->>User: Envoie notification de modification
+    ReservationService-->>API: Réservation modifiée
+    API-->>Frontend: 200 OK + Données mises à jour
+    Frontend-->>User: Affiche confirmation modification
+    
+    %% Vehicle Return and Review Flow
+    User->>Frontend: Marque le retour du véhicule
+    Frontend->>API: PUT /api/reservations/{id}/return
+    API->>ReservationService: markVehicleReturned(id)
+    ReservationService->>Database: Met à jour statut à "returned"
+    Database-->>ReservationService: Mise à jour OK
+    ReservationService->>PaymentService: releaseDeposit(reservationId)
+    PaymentService->>Database: Enregistre libération caution
+    PaymentService-->>ReservationService: Caution libérée
+    ReservationService-->>API: Retour complété
+    API-->>Frontend: 200 OK + Confirmation
+    Frontend-->>User: Invite à laisser un avis
+    User->>Frontend: Soumet un avis
+    Frontend->>API: POST /api/reviews
+    API->>UserService: createReview(reviewData)
+    UserService->>Database: Enregistre l'avis
+    Database-->>UserService: Avis enregistré
+    UserService-->>API: Avis créé
+    API-->>Frontend: 201 Created
+    Frontend-->>User: Remercie pour l'avis
+    
+    %% Admin Vehicle Management Flow
+    participant Admin
+    Admin->>Frontend: Accède à l'interface d'administration
+    Frontend->>API: POST /api/auth/admin/login
+    API->>AuthService: adminLogin(credentials)
+    AuthService->>Database: Vérifie identifiants admin
+    Database-->>AuthService: Admin authentifié
+    AuthService-->>API: Token admin
+    API-->>Frontend: 200 OK + Token admin
+    Frontend-->>Admin: Affiche tableau de bord admin
+    Admin->>Frontend: Gère disponibilité des véhicules
+    Frontend->>API: PUT /api/admin/vehicles/{id}/availability
+    API->>VehicleService: updateAvailability(id, availabilityData)
+    VehicleService->>Database: Met à jour disponibilité
+    Database-->>VehicleService: Mise à jour OK
+    VehicleService-->>API: Disponibilité mise à jour
+    API-->>Frontend: 200 OK
+    Frontend-->>Admin: Affiche confirmation
