@@ -1,12 +1,35 @@
-import React from 'react';
+    const [reservation, setReservation] = useState({
+        vehicleId: '',
+        pickupLocationId: '',
+        dropoffLocationId: '',
+        pickupDateTime: '',
+        dropoffDateTime: '',
+        addons: [],
+        paymentMethodId: '',
+    });
 
-const ReservationPage = () => {
-  return (
-    <div>
-      <h1>Reservation Page</h1>
-      <p>This is a placeholder for the Reservation Page.</p>
-    </div>
-  );
-};
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setReservation((prevState) => ({
+            ...prevState,
+            [name]: value,
+        }));
+    };
 
-export default ReservationPage;
+    const handleAddonsChange = (e) => {
+        const { name, value } = e.target;
+        setReservation((prevState) => ({
+            ...prevState,
+            addons: prevState.addons.map((addon) =>
+                addon.name === name ? { ...addon, quantity: value } : addon
+            ),
+        }));
+    };
+
+    const handlePaymentMethodChange = (e) => {
+        const { value } = e.target;
+        setReservation((prevState) => ({
+            ...prevState,
+            paymentMethodId: value,
+        }));
+    };

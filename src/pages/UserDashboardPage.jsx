@@ -1,12 +1,12 @@
-import React from 'react';
+    const [reservations, setReservations] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-const UserDashboardPage = () => {
-  return (
-    <div>
-      <h1>User Dashboard Page</h1>
-      <p>This is a placeholder for the User Dashboard Page.</p>
-    </div>
-  );
-};
-
-export default UserDashboardPage;
+    useEffect(() => {
+      const fetchReservations = async () => {
+        const response = await fetch(`/api/reservations?userId=${user.userId}`);
+        const data = await response.json();
+        setReservations(data);
+        setLoading(false);
+      };
+      fetchReservations();
+    }, [user.userId]);
