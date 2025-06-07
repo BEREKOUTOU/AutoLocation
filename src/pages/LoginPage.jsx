@@ -36,7 +36,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-md">
+    <div className="container mx-auto p-4 max-w-md mt-20">
       <h1 className="text-3xl font-bold mb-4 text-center">Connexion</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4">
