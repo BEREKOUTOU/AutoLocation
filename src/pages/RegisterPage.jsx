@@ -41,7 +41,8 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 max-w-md bg-white rounded shadow m-10">
+      <h1 className="text-3xl font-bold mb-4">Créer un compte</h1>
       <h1 className="text-3xl font-bold mb-4">Inscription</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4">

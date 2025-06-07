@@ -36,8 +36,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Connexion</h1>
+    <div className="container mx-auto p-4 max-w-md">
+      <h1 className="text-3xl font-bold mb-4 text-center">Connexion</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4">
           <label htmlFor="email" className="block">Adresse email</label>
@@ -49,9 +49,9 @@ const LoginPage = () => {
           <input type="password" {...register('password')} className="border border-gray-400 p-2 w-full" />
           {errors.password && <p className="text-red-600">{errors.password.message}</p>}
         </div>
-        <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Connexion</button>
+        <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">Connexion</button>
         <p className="mt-4">
-          <Link to="/register" className="text-blue-500 hover:text-blue-700">Créer un compte</Link>
+          <Link to="/register" className="text-blue-500 hover:text-blue-700"  >Créer un compte</Link>
         </p>
       </form>
     </div>
