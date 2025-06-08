@@ -33,10 +33,10 @@ function Header({ user, onLogout }) {
             <Link to="/search" className="text-gray-700 hover:text-blue-600 transition-colors">
               Véhicules
             </Link>
-            <Link to="#" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link to="/howitworks" className="text-gray-700 hover:text-blue-600 transition-colors">
               Comment ça marche
             </Link>
-            <Link to="#" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link to="/contact" className="text-gray-700 hover:text-blue-600 transition-colors">
               Contact
             </Link>
           </nav>
@@ -115,14 +115,14 @@ function Header({ user, onLogout }) {
                 Véhicules
               </Link>
               <Link 
-                to="#" 
+                to="/howitworks" 
                 className="text-gray-700 hover:text-blue-600 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Comment ça marche
               </Link>
               <Link 
-                to="#" 
+                to="/contact" 
                 className="text-gray-700 hover:text-blue-600 transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
