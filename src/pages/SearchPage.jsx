@@ -2,14 +2,6 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import SearchForm from '../components/SearchForm';
 import SearchResults from '../components/SearchResults';
-import Renault from '/assets/images/Renault Clio.jpg';
-import Peugeot from '/assets/images/Peugeot 3008.jpg';
-import Citroen from '/assets/images/Citroën C3.jpg';
-import Audi from '/assets/images/Audi_A4_B9_Limousine_3.0_TDI_quattro.webp';
-import Volkswagen from '/assets/images/volkswagen-golf-r-mk85-2024.webp';
-import Toyota from '/assets/images/Yaris_mobile_Large-Landscape.webp';
-import BMW from '/assets/images/BMW X3.webp';
-import Mercedes from '/assets/images/Mercedes Classe s.webp';
 
 function SearchPage() {
   const [searchParams] = useSearchParams();
@@ -131,15 +123,15 @@ function SearchPage() {
         {
           id: 7,
           brand: 'BMW',
-          model: 'X3',
-          year: 2021,
+          model: 'X3 2025',
+          year: 2025,
           category: 'SUV',
-          image: '/assets/images/BMW X3.webp',
+          image: '/assets/images/BMW X3 2025.webp',
           price: 110,
           transmission: 'Automatique',
           seats: 5,
           fuelType: 'Diesel',
-          available: false,
+          available: true,
           description: 'SUV premium alliant confort, espace et performances.',
           features: ['Climatisation bi-zone', 'Système audio premium', 'GPS', 'Sièges chauffants', 'Toit panoramique']
         },
@@ -157,6 +149,66 @@ function SearchPage() {
           available: true,
           description: 'Berline de luxe avec confort premium et technologies avancées.',
           features: ['Climatisation bi-zone', 'Système audio premium', 'GPS', 'Sièges chauffants et ventilés', 'Assistant de conduite']
+        },
+        {
+          id: 9,
+          brand: 'Renault',
+          model: 'Clio',
+          year: 2022,
+          category: 'Économique',
+          image: '/assets/images/Renault Clio.jpg',
+          price: 35,
+          transmission: 'Manuelle',
+          seats: 5,
+          fuelType: 'Essence',
+          available: true,
+          description: 'Une voiture économique et fiable, parfaite pour la ville.',
+          features: ['Climatisation', 'Bluetooth', 'GPS', 'Régulateur de vitesse']
+        },
+        {
+          id: 10,
+          brand: 'Peugeot',
+          model: '3008',
+          year: 2021,
+          category: 'SUV',
+          image: '/assets/images/Peugeot 3008.jpg',
+          price: 65,
+          transmission: 'Automatique',
+          seats: 5,
+          fuelType: 'Diesel',
+          available: true,
+          description: 'Un SUV spacieux et confortable pour toute la famille.',
+          features: ['Climatisation', 'Bluetooth', 'GPS', 'Caméra de recul', 'Régulateur de vitesse adaptatif']
+        },
+        {
+          id: 11,
+          brand: 'Citroën',
+          model: 'C3',
+          year: 2022,
+          category: 'Économique',
+          image: '/assets/images/Citroën C3.jpg',
+          price: 38,
+          transmission: 'Manuelle',
+          seats: 5,
+          fuelType: 'Essence',
+          available: true,
+          description: 'Compacte et facile à conduire, idéale pour les trajets quotidiens.',
+          features: ['Climatisation', 'Bluetooth', 'Régulateur de vitesse']
+        },
+        {
+          id: 12,
+          brand: 'Audi',
+          model: 'A4',
+          year: 2021,
+          category: 'Premium',
+          image: '/assets/images/Audi_A4_B9_Limousine_3.0_TDI_quattro.webp',
+          price: 95,
+          transmission: 'Automatique',
+          seats: 5,
+          fuelType: 'Diesel',
+          available: true,
+          description: 'Une berline premium avec un confort et des performances exceptionnels.',
+          features: ['Climatisation bi-zone', 'Système audio premium', 'GPS', 'Sièges chauffants', 'Caméra 360°']
         }
       ];
       
