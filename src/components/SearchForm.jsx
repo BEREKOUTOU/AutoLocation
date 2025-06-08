@@ -11,8 +11,8 @@ function SearchForm({
   maxPriceValue
 }) {
   return (
-    <div className="search-form p-4 bg-white rounded shadow mb-6">
-      <h2 className="text-2xl font-semibold mb-4">Filtres de recherche</h2>
+    <div className="search-form p-4 bg-white rounded shadow mb-6 mt-20   mx-auto">
+      <h2 className="text-2xl font-semibold mb-4 text-center">Filtres de recherche</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Categories */}
@@ -119,7 +119,7 @@ function SearchForm({
         </div>
       </div>
 
-      <div className="mt-4">
+      <div className="mt-4 text-center">
         <button
           onClick={resetFilters}
           className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors"
