@@ -1,10 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Renault from '/assets/images/Renault Clio.jpeg';
-import Peugeot from '/assets/images/Peugeot 3008.jpg';
-import Citroen from '/assets/images/citroen-c3.jpg';
-import Audi from '/assets/images/Audi A4.jpg';
-import Hero from '/assets/images/hero-bg.jpg';
 function HomePage() {
   const [locations, setLocations] = useState([
     { id: 1, name: 'Paris' },
@@ -76,6 +71,24 @@ function HomePage() {
     pickupTime: '10:00',
     dropoffTime: '10:00',
   });
+
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -98,7 +111,7 @@ function HomePage() {
   
   // Hero section with animated background (using Tailwind utility classes)
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
       {/* Hero Section */}
       <section 
         className="relative bg-cover bg-center h-[600px]" 
@@ -382,6 +395,19 @@ function HomePage() {
           </div>
         </div>
       </section>
+
+{showBackToTop && (
+  <button
+    onClick={scrollToTop}
+    className="fixed bottom-8 right-8 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+    aria-label="Back to top"
+    title="Back to top"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+    </svg>
+  </button>
+)}
     </div>
   );
 }
