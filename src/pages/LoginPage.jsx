@@ -24,11 +24,16 @@ const LoginPage = () => {
         },
         body: JSON.stringify(data),
       });
-      if (response.ok) {
-        navigate('/');
+      if (response) {
+        alert('Connexion réussie');
+        // Optionally, you can store the token or user info in localStorage or context
+        const userData = await response.json();
+        localStorage.setItem('user', JSON.stringify(userData));
+        navigate('/dashboard');
       } else {
         const errorMessage = await response.text();
         alert(errorMessage);
+        console.error('Erreur de connexion:', errorMessage);
       }
     } catch (error) {
       console.error(error);
