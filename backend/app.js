@@ -16,6 +16,7 @@ const vehicleCategoriesRouter = require('./routes/vehicleCategories');
 const vehiclesRouter = require('./routes/vehicles');
 const reservationsRouter = require('./routes/reservations');
 const testimonialsRouter = require('./routes/testimonials');
+const authRouter = require('./routes/auth');
 
 // Use routes
 app.use('/api/users', usersRouter);
@@ -24,6 +25,7 @@ app.use('/api/vehicle-categories', vehicleCategoriesRouter);
 app.use('/api/vehicles', vehiclesRouter);
 app.use('/api/reservations', reservationsRouter);
 app.use('/api/testimonials', testimonialsRouter);
+app.use('/api/auth', authRouter);
 
 app.get('/', (req, res) => {
   res.send('Auto Location Backend API is running');

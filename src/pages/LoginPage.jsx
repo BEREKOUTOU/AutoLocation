@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -6,10 +6,10 @@ import * as yup from 'yup';
 
 const schema = yup.object().shape({
   email: yup.string().email('L\'adresse email est invalide').required('L\'adresse email est requise'),
-  password: yup.string().min(8, 'Le mot de passe doit contenir au moins 8 caract res').required('Le mot de passe est requis'),
+  password: yup.string().min(8, 'Le mot de passe doit contenir au moins 8 caractères').required('Le mot de passe est requis'),
 });
 
-const LoginPage = () => {
+const LoginPage = ({ onLogin }) => {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
@@ -17,18 +17,18 @@ const LoginPage = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
       });
-      if (response) {
+      if (response.ok) {
         alert('Connexion réussie');
-        // Optionally, you can store the token or user info in localStorage or context
         const userData = await response.json();
         localStorage.setItem('user', JSON.stringify(userData));
+        onLogin(userData);
         navigate('/dashboard');
       } else {
         const errorMessage = await response.text();
@@ -56,7 +56,7 @@ const LoginPage = () => {
         </div>
         <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full">Connexion</button>
         <p className="mt-4">
-          <Link to="/register" className="text-blue-500 hover:text-blue-700"  >Créer un compte</Link>
+          <Link to="/register" className="text-blue-500 hover:text-blue-700">Créer un compte</Link>
         </p>
       </form>
     </div>
