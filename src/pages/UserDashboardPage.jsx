@@ -5,14 +5,14 @@ export default function UserDashboardPage({ user }) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-      const fetchReservations = async () => {
-        const response = await fetch(`/api/reservations?userId=${user.userId}`);
+const fetchReservations = async () => {
+        const response = await fetch(`/api/reservations?userId=${user.id}`);
         const data = await response.json();
         setReservations(data);
         setLoading(false);
       };
       fetchReservations();
-    }, [user.userId]);
+    }, [user.id]);
     
     return (
       <div className="container mx-auto p-4">
