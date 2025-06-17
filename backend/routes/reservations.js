@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { Reservation } = require('../models');
+const { Reservation, Vehicle } = require('../models');
+
 
 // Get all reservations or filter by userId query parameter
 router.get('/', async (req, res) => {
@@ -8,12 +9,13 @@ router.get('/', async (req, res) => {
     const { userId } = req.query;
     let reservations;
     if (userId) {
-      reservations = await Reservation.findAll({ where: { userId }, include: ['vehicle'] });
+      reservations = await Reservation.findAll({ where: { userId }, include: [{ model: Vehicle }] });
     } else {
-      reservations = await Reservation.findAll({ include: ['vehicle'] });
+      reservations = await Reservation.findAll({ include: [{ model: Vehicle }] });
     }
     res.json(reservations);
   } catch (err) {
+    console.error('Error fetching reservations:', err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -35,6 +37,7 @@ router.post('/', async (req, res) => {
     const newReservation = await Reservation.create(req.body);
     res.status(201).json(newReservation);
   } catch (err) {
+    console.error('Error creating reservation:', err);
     res.status(400).json({ error: err.message });
   }
 });
