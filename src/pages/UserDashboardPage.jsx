@@ -1,4 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+UserDashboardPage.propTypes = {
+    user: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string,
+        email: PropTypes.string,
+    }),
+};
+UserDashboardPage.defaultProps = {
+    user: null,
+};
 
 export default function UserDashboardPage({ user }) {
     const [reservations, setReservations] = useState([]);
@@ -44,7 +55,9 @@ export default function UserDashboardPage({ user }) {
         ) : (
           <ul>
             {reservations.map(reservation => (
-              <li key={reservation.id}>{reservation.vehicle.brand} {reservation.vehicle.model}</li>
+              <li key={reservation.id}>
+                {reservation.vehicle ? `${reservation.vehicle.brand} ${reservation.vehicle.model}` : 'Vehicle data not available'}
+              </li>
             ))}
           </ul>
         )}
